@@ -8,7 +8,8 @@ namespace aspnet_mvc_helpers
     /// Used attribute to remove cache page for each call to server
     /// Place attribute on controller method
     /// </summary>
-    public class NoCache : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class NoCacheAttribute : ActionFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext filterContext)
         {
@@ -44,7 +45,8 @@ namespace aspnet_mvc_helpers
     /// Attribut used to say to the browser (and server)
     /// this action is highly cacheable
     /// </summary>
-    public class OptimizedForCache : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class OptimizedForCacheAttribute : ActionFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext filterContext)
         {

@@ -45,7 +45,7 @@ namespace aspnet_mvc_helpers
 
     /// <summary>
     /// Represents a globally unique identifier (GUID) with a 
-    /// shorter string value. Sguid
+    /// shorter string value
     /// </summary>
     public struct ShortGuid
     {

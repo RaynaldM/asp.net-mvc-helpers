@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
@@ -12,6 +13,47 @@ namespace aspnet_mvc_helpers
 {
     public static class HtmlExtensions
     {
+        /// <summary>
+        /// Create a radio button MVC compatible and BootStrap compatible 
+        /// </summary>
+        /// <typeparam name="TModel">The type of Model</typeparam>
+        /// <typeparam name="TValue">The type of Value</typeparam>
+        /// <param name="html">Html Comntext</param>
+        /// <param name="expression">an axpression</param>
+        /// <param name="htmlAttributes">htmlAttributes to add in std control</param>
+        /// <returns>The Html of control</returns>
+        public static MvcHtmlString BootstrapRadioButtons<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, Object htmlAttributes = null)
+        {
+            //http://weblogs.asp.net/psheriff/creating-radio-buttons-using-bootstrap-and-mvc
+            var metaData = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+            var names = Enum.GetNames(metaData.ModelType);
+            var sb = new StringBuilder();
+            foreach (var name in names)
+            {
+                var id = string.Format(
+                    "{0}_{1}_{2}",
+                    html.ViewData.TemplateInfo.HtmlFieldPrefix,
+                    metaData.PropertyName,
+                    name
+                    );
+
+                var radio = html.RadioButtonFor(expression, name, htmlAttributes).ToHtmlString();
+                var active = radio.Contains("data-val=\"true\"") ? " active" : String.Empty;
+                sb.AppendFormat(
+                    "<label id='{0}' class='btn btn-primary{3}'>{2}{1}</label>",
+                    id,
+                    name,
+                    radio,
+                    active
+                    );
+            }
+            const string domElement = @"<div class='btn-group' data-toggle='buttons'>{0}</div>";
+
+            var result = String.Format(domElement, sb);
+
+            return new MvcHtmlString(result);
+        }
+
         /// <summary>
         /// Create a checkbox in BootStrap Standard
         /// http://getbootstrap.com/css/#forms-controls
@@ -45,7 +87,7 @@ namespace aspnet_mvc_helpers
         }
 
         /// <summary>
-        /// Helpers : set the mail type on an input 
+        /// set the mail type on an input (HTML5)
         /// </summary>
         /// <typeparam name="TModel">Exposed model</typeparam>
         /// <typeparam name="TProperty">Property type of field</typeparam>
