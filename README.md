@@ -1,7 +1,7 @@
 asp.net-mvc-helpers
 ===================
 
-A simple and short collections usefull for asp.net MVC 4+
+A simple and short collections usefull for asp.net MVC 5
 
 ###HtmlExtensions
 
@@ -36,6 +36,11 @@ Get the culture from browser (client side)
 
 #####CompressedPartial
 Compress a partial view
+
+#####GravatarImage
+ Compose a valid Gravatar Url from email
+         see : https://fr.gravatar.com/site/implement/images/
+	   for more details
 
 ###Attributes
 #####NoCacheAttribute
