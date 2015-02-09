@@ -1,7 +1,7 @@
 asp.net-mvc-helpers
 ===================
 
-A simple and short collections usefull for asp.net MVC 5
+A simple and short collections helpers for asp.net MVC 5
 
 Available on Nuget (https://www.nuget.org/packages/asp.net-mvc-helpers/)
 
