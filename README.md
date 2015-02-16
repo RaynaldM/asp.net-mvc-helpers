@@ -1,7 +1,9 @@
 asp.net-mvc-helpers
 ===================
 
-A simple and short collections usefull for asp.net MVC 4+
+A simple and short collections helpers for asp.net MVC 5
+
+Available on Nuget (https://www.nuget.org/packages/asp.net-mvc-helpers/)
 
 ###HtmlExtensions
 
@@ -11,7 +13,7 @@ Create a radio button MVC compatible and BootStrap compatible
 
 #####BootStrapCheckBoxFor
 Create a checkbox in BootStrap Standard
-http://getbootstrap.com/css/#forms-controls
+ (http://getbootstrap.com/css/#forms-controls)
       
 #####EmailFor
 set the mail type on an input (HTML5)
@@ -36,6 +38,11 @@ Get the culture from browser (client side)
 
 #####CompressedPartial
 Compress a partial view
+
+#####GravatarImage
+ Compose a valid Gravatar Url from email
+         (see : https://fr.gravatar.com/site/implement/images/
+	   for more details)
 
 ###Attributes
 #####NoCacheAttribute
