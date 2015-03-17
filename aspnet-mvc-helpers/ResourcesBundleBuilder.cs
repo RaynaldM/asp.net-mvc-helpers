@@ -47,7 +47,7 @@ namespace aspnet_mvc_helpers
             try
             {
                 var content = new StringBuilder();
-                // Get the DLL
+                // Get the DLL by reflexion
                 var assem = Assembly.Load(this._dllName);
                 // Try to find the resources in DLL
                 var resourceSet = (new ResourceManager(this._nameSpace, assem))
@@ -62,7 +62,7 @@ namespace aspnet_mvc_helpers
                 content.Remove(0, 1);
 
                 // Prepare the JSON
-                content.Insert(0, ";" + this._javascriptName + "={");
+                content.Insert(0, ";window." + this._javascriptName + "={");
                 content.Append("};");
 
                 return content.ToString();
