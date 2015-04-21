@@ -58,6 +58,10 @@ Used attribute to filter Ajax call from client
 #####OptimizedForCacheAttribute
 Attribut used to say to the browser (and server) this action is highly cacheable
 
+#####ThrottleAttribute
+Decorates any MVC route that needs to have client requests limited by time.
+come from http://stackoverflow.com/questions/33969/best-way-to-implement-request-throttling-in-asp-net-mvc
+
 ###Helpers
 #####StartOfTheUnixWorld
 Give the date of Computer Start Date
