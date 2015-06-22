@@ -130,7 +130,7 @@ namespace aspnet_mvc_helpers
 
             var realName = url.Substring(0, suffixPos);
 
-            return helper.JavaScript(realName);
+            return helper.JavaScript(realName, debug);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace aspnet_mvc_helpers
 
                 realUrls.Add(url.Substring(0, suffixPos));
             }
-            return helper.JavaScript(bundleName, realUrls);
+            return helper.JavaScript(bundleName, realUrls, debug);
         }
 
         /// <summary>
