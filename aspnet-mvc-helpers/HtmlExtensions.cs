@@ -420,19 +420,24 @@ namespace aspnet_mvc_helpers
         /// <returns>Html String to inject in page</returns>
         public static MvcHtmlString AnalyticsScript(this HtmlHelper helper, Boolean debug = false)
         {
-            var googlekey = WebConfigurationManager.AppSettings["GoogleAnalytics"];
+
             var applicationInsightsKey = WebConfigurationManager.AppSettings["applicationInsights"];
 
-            if (String.IsNullOrEmpty(applicationInsightsKey) && String.IsNullOrEmpty(googlekey)) return null;
+            if (String.IsNullOrEmpty(applicationInsightsKey) && debug) return null;
 
             var script = new StringBuilder("<script type='text/javascript'>");
+
+            if (!debug)
+            {
+                const string googleScript = "(function (i, s, o, g, r, a, m) {i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {(i[r].q = i[r].q || []).push(arguments)}, i[r].l = 1 * new Date(); a = s.createElement(o), m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');ga('create', '{0}', 'auto');ga('send', 'pageview');";
+                var googlekey = WebConfigurationManager.AppSettings["GoogleAnalytics"];
+                if (!String.IsNullOrWhiteSpace(googlekey))
+                    script.AppendFormat(googleScript, googlekey);
+
+            }
             if (!String.IsNullOrEmpty(applicationInsightsKey))
             {
                 script.AppendFormat("window.applicationInsightsKey='{0}';", applicationInsightsKey);
-            }
-            if (!debug && !String.IsNullOrEmpty(googlekey))
-            {
-                script.AppendFormat("window.googlekey='{0}';", googlekey);
             }
 
             script.Append("</script>");
