@@ -280,14 +280,18 @@ namespace aspnet_mvc_helpers
         /// <param name="mvcVersion">Default version of JQuery Validate Unobtrusive (5.2.3 by default)</param>
         /// <returns>Scripts url for validations</returns>
         public static MvcHtmlString JQueryVal(this HtmlHelper helper, Boolean debug = false,
-            String bundleName = "~/bundles/jqueryval", String version = "1.13.1", String mvcVersion = "5.2.3")
+            String bundleName = "~/bundles/jqueryval", String version = "1.14.0", String mvcVersion = "5.2.3")
         {
+            // todo : increase version when MS CDN is ready
+            // todo : include localized message
             if (!debug)
             {
                 var scriptValidate = String.Format("{0}jquery.validate/{1}/jquery.validate.min.js", CDNRoot, version);
+                var scriptValidateAdditionalMethods = String.Format("{0}jquery.validate/{1}/additional-methods.min.js", CDNRoot, version);
                 var scriptUnobtrusive = String.Format("{0}mvc/{1}/jquery.validate.unobtrusive.min.js", CDNRoot, mvcVersion);
                 return new MvcHtmlString(
                         String.Format(ScriptTag, scriptValidate) +
+                        String.Format(ScriptTag, scriptValidateAdditionalMethods) +
                         String.Format(ScriptTag, scriptUnobtrusive));
 
             }
