@@ -182,7 +182,7 @@ namespace aspnet_mvc_helpers
             // if we are in debug mode, just return the script tag
             if (debug)
                 return new MvcHtmlString(String.Format(ScriptTag,
-                    System.Web.VirtualPathUtility.ToAbsolute(url + ".js")));
+                    System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
 
             // try to find the bundle in app bundles table
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url);
@@ -212,10 +212,11 @@ namespace aspnet_mvc_helpers
             // if we are in debug mode, just return the script tags
             if (debug)
             {
+                // UTC now is use for prevent against cache joke
                 var scr = urls.Aggregate("",
                     (current, url) =>
                         current +
-                        String.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js")));
+                        String.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
 
                 return new MvcHtmlString(scr);
             }
