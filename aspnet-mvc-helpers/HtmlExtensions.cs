@@ -19,6 +19,7 @@ namespace aspnet_mvc_helpers
     public static class HtmlExtensions
     {
         private const String CDNRoot = "http://ajax.aspnetcdn.com/ajax/";
+        private static ShortGuid _ctag = new ShortGuid(Guid.NewGuid());
         /// <summary>
         /// Create a radio button MVC compatible and BootStrap compatible 
         /// </summary>
@@ -191,7 +192,7 @@ namespace aspnet_mvc_helpers
                 // if not found, create it (for everybody)
                 var jsBundle = new ScriptBundle(url).Include(url + ".js");
                 BundleTable.Bundles.Add(jsBundle);
-                bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url);
+                bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url)+"?v="+_ctag;
             }
             // return the script tag with the right bundle url
             return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
@@ -309,11 +310,13 @@ namespace aspnet_mvc_helpers
         /// <param name="name">The CSS files</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns></returns>
-        public static MvcHtmlString Css(this HtmlHelper helper, String name, Boolean debug = false)
+        public static MvcHtmlString Css(this HtmlHelper helper, string name, bool debug = false)
         {
             if (!debug)
                 // in release mode, we send the minify version of css
                 name = name.Substring(0, name.IndexOf('.')) + ".min.css";
+
+            name += "?v=" + _ctag;
 
             return new MvcHtmlString(String.Format("<link rel='stylesheet' href='{0}'>", System.Web.VirtualPathUtility.ToAbsolute(name)));
         }
