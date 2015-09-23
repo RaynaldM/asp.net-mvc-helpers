@@ -19,7 +19,10 @@ namespace aspnet_mvc_helpers
     public static class HtmlExtensions
     {
         private const String CDNRoot = "http://ajax.aspnetcdn.com/ajax/";
-        private static ShortGuid _ctag = new ShortGuid(Guid.NewGuid());
+        /// <summary>
+        /// Tag for prevent caching
+        /// </summary>
+        public static ShortGuid CacheTag = new ShortGuid(Guid.NewGuid());
         /// <summary>
         /// Create a radio button MVC compatible and BootStrap compatible 
         /// </summary>
@@ -192,7 +195,7 @@ namespace aspnet_mvc_helpers
                 // if not found, create it (for everybody)
                 var jsBundle = new ScriptBundle(url).Include(url + ".js");
                 BundleTable.Bundles.Add(jsBundle);
-                bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url)+"?v="+_ctag;
+                bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url)+"?v="+ CacheTag;
             }
             // return the script tag with the right bundle url
             return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
@@ -251,7 +254,7 @@ namespace aspnet_mvc_helpers
         /// <param name="bundleName">Default name of JQuery bundle (default : ~/bundles/jquery) </param>
         /// <param name="version">Default version of JQuery (2.1.3 by default)</param>
         /// <returns>Scripts url for JQuery</returns>
-        public static MvcHtmlString JQuery(this HtmlHelper helper, Boolean debug = false, String bundleName = "~/bundles/jquery", String version = "2.1.3")
+        public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false, string bundleName = "~/bundles/jquery", string version = "2.1.3")
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
@@ -312,11 +315,13 @@ namespace aspnet_mvc_helpers
         /// <returns></returns>
         public static MvcHtmlString Css(this HtmlHelper helper, string name, bool debug = false)
         {
-            if (!debug)
-                // in release mode, we send the minify version of css
-                name = name.Substring(0, name.IndexOf('.')) + ".min.css";
+	        if (!debug)
+	        {
+		        // in release mode, we send the minify version of css
+		        name = name.Substring(0, name.IndexOf('.')) + ".min.css";
+	        }
 
-            name += "?v=" + _ctag;
+	        name += "?v=" + CacheTag;
 
             return new MvcHtmlString(String.Format("<link rel='stylesheet' href='{0}'>", System.Web.VirtualPathUtility.ToAbsolute(name)));
         }
