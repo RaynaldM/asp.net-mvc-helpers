@@ -93,7 +93,7 @@ namespace aspnet_mvc_helpers
 
         public override void OnActionExecuting(ActionExecutingContext c)
         {
-            var key = string.Concat(Name, "-", c.HttpContext.Request.UserHostAddress);
+            var key = string.Concat(Name, "-", c.HttpContext.Request.UserHostAddress, "-", c.HttpContext.Request.UserAgent);
             var allowExecute = false;
 
             if (HttpRuntime.Cache[key] == null)
