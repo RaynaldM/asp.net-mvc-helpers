@@ -84,3 +84,6 @@ Represents a globally unique identifier (GUID) with a shorter string value than 
 
 ####ResourcesBundleBuilder
 Builder use to make bundlesfrom resx embedded files in dll
+
+####Slack WebHook Helper
+Just for send simple message to slack via Slack Api > RestSharp
