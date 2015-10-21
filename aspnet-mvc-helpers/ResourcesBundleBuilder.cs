@@ -59,7 +59,7 @@ namespace aspnet_mvc_helpers
                     content.AppendFormat("{0}:\"{1}\",", entry.Key, entry.Value);
                 }
                 // remove the last ','
-                content.Remove(content.Length, 1);
+                content.Remove(content.Length-1, 1);
 
                 // Prepare the JSON
                 content.Append("};");
