@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -8,6 +10,7 @@ namespace aspnet_mvc_helpers
     /// <summary>
     /// Helpers to send message to slack
     ///  look at https://api.slack.com/incoming-webhooks for more information
+    /// todo : implement attachement (https://api.slack.com/docs/attachments)
     /// </summary>
     public static class SlackWebHookHelpers
     {
@@ -42,7 +45,6 @@ namespace aspnet_mvc_helpers
                     StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
                 });
 
-
             // init rest client with Slack Url
             var client = new RestClient(webHookSlackUrl);
 
@@ -53,6 +55,55 @@ namespace aspnet_mvc_helpers
 
             // and execute it
             var response = client.Execute(request);
+            // return Http Status of call
+            return response.StatusCode;
+
+            // http://www.codeproject.com/Articles/611176/Calling-ASP-NET-WebAPI-using-HttpClient
+            // http://johnnycode.com/2012/02/23/consuming-your-own-asp-net-web-api-rest-service/
+        }
+
+        /// <summary>
+        /// Send a simple text message to slack
+        ///  All other parameters is defaults
+        /// </summary>
+        /// <param name="webHookSlackUrl">Url provided by Slack on Incoming WebHooks page</param>
+        /// <param name="message">Message to send</param>
+        ///  <returns>200 : Ok, other : Http Status code of error</returns>
+        public static Task<HttpStatusCode> SendAsync(string webHookSlackUrl, string message)
+        {
+            var info = new PayLoad { Text = message };
+            return SendAsync(webHookSlackUrl, info);
+        }
+
+        /// <summary>
+        /// Send a full qualified object to Slack
+        /// </summary>
+        /// <param name="webHookSlackUrl">Url provided by Slack on Incoming WebHooks page</param>
+        /// <param name="infoLoad"></param>
+        ///  <returns>200 : Ok, other : Http Status code of error</returns>
+        public static async Task<HttpStatusCode> SendAsync(string webHookSlackUrl, PayLoad infoLoad)
+        {
+            if (string.IsNullOrEmpty(webHookSlackUrl))
+                throw new ArgumentNullException(nameof(webHookSlackUrl));
+
+            var jsonToSend = JsonConvert.SerializeObject(infoLoad,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+                });
+
+            // init rest client with Slack Url
+            var client = new RestClient(webHookSlackUrl);
+
+            // set the method : POST for slack
+            var request = new RestRequest(Method.POST);
+            // set the payload param
+            request.AddParameter("payload", jsonToSend);
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            // and execute it
+            var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
             // return Http Status of call
             return response.StatusCode;
         }

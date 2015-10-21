@@ -57,9 +57,8 @@ namespace aspnet_mvc_helpers
                     active
                     );
             }
-            const string domElement = @"<div class='btn-group' data-toggle='buttons'>{0}</div>";
-
-            var result = String.Format(domElement, sb);
+        
+            var result = String.Format("<div class='btn-group' data-toggle='buttons'>{0}</div>", sb);
 
             return new MvcHtmlString(result);
         }
@@ -158,7 +157,7 @@ namespace aspnet_mvc_helpers
                     return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
             }
 
-            var realUrls = new List<String>();
+            var realUrls = new List<string>();
             foreach (var url in urls)
             {
                 // ReSharper disable once NotResolvedInText

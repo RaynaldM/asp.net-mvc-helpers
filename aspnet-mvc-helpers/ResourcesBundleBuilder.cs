@@ -46,23 +46,22 @@ namespace aspnet_mvc_helpers
         {
             try
             {
-                var content = new StringBuilder();
                 // Get the DLL by reflexion
                 var assem = Assembly.Load(this._dllName);
                 // Try to find the resources in DLL
                 var resourceSet = (new ResourceManager(this._nameSpace, assem))
                     .GetResourceSet(new CultureInfo(this._language), true, true);
 
+                var content = new StringBuilder(";window." + this._javascriptName + "={");
                 // Add resources items in content
                 foreach (DictionaryEntry entry in resourceSet)
                 {
-                    content.AppendFormat(",{0}:\"{1}\"", entry.Key, entry.Value);
+                    content.AppendFormat("{0}:\"{1}\",", entry.Key, entry.Value);
                 }
-                // remove the first ','
-                content.Remove(0, 1);
+                // remove the last ','
+                content.Remove(content.Length, 1);
 
                 // Prepare the JSON
-                content.Insert(0, ";window." + this._javascriptName + "={");
                 content.Append("};");
 
                 return content.ToString();

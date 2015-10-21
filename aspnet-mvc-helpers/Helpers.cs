@@ -118,8 +118,8 @@ namespace aspnet_mvc_helpers
 
         #region Fields
 
-        Guid _guid;
-        string _value;
+        private Guid _guid;
+        private string _value;
 
         #endregion
 
@@ -307,7 +307,6 @@ namespace aspnet_mvc_helpers
         public static bool operator ==(ShortGuid x, ShortGuid y)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if ((object)x == null) return (object)y == null;
             return x._guid == y._guid;
         }
 
