@@ -94,6 +94,7 @@ namespace aspnet_mvc_helpers
         public override void OnActionExecuting(ActionExecutingContext c)
         {
             var key = string.Concat(Name, "-", c.HttpContext.Request.UserHostAddress, "-", c.HttpContext.Request.UserAgent);
+            //c.HttpContext.Session.SessionID;
             var allowExecute = false;
 
             if (HttpRuntime.Cache[key] == null)
@@ -116,7 +117,7 @@ namespace aspnet_mvc_helpers
 
                 c.Result = new ContentResult { Content = Message.Replace("{n}", Seconds.ToString()) };
                 // see 409 - http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-                c.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                c.HttpContext.Response.StatusCode = 429;
             }
         }
     }
