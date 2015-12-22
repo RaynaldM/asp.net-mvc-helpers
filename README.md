@@ -49,6 +49,9 @@ Compress a partial view
  Compose a valid Gravatar Url from email
          (see : https://fr.gravatar.com/site/implement/images/
 	   for more details)
+	   
+#####ActionLink With GlyphIcon
+ Create an Action Link with a Glyph Icon 
 
 ###Attributes
 #####NoCacheAttribute
