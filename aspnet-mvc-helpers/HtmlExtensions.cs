@@ -171,7 +171,6 @@ namespace aspnet_mvc_helpers
             }
             return helper.JavaScript(bundleName, realUrls, debug);
         }
-
         /// <summary>
         /// Load a JS, create a Bundle 
         /// and set the script tag to load it
@@ -182,20 +181,40 @@ namespace aspnet_mvc_helpers
         /// <returns>Return the script source</returns>
         public static MvcHtmlString JavaScript(this HtmlHelper helper, string url, bool debug = false)
         {
+            return JavaScript(helper, url, true, debug);
+        }
+
+        /// <summary>
+        /// Load a JS, create a Bundle 
+        /// and set the script tag to load it
+        /// </summary>
+        /// <param name="helper">The HTML context</param>
+        /// <param name="url">Ulr of JS file</param>
+        /// <param name="noBundle"></param>
+        /// <param name="debug">Set if we we are in debug mode(true)</param>
+        /// <returns>Return the script source</returns>
+        public static MvcHtmlString JavaScript(this HtmlHelper helper, string url, bool noBundle = false, bool debug = false)
+        {
             // if we are in debug mode, just return the script tag
             if (debug)
                 return new MvcHtmlString(string.Format(ScriptTag,
                     System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
 
+            if (!noBundle)
+            {
+                // if BundleName is null, don't use the bundle and send just a script tag (with .min)
+                return new MvcHtmlString(string.Format(ScriptTag,
+                System.Web.VirtualPathUtility.ToAbsolute(url + ".min.js") + "?v=" + CacheTag));
+
+            }
             // try to find the bundle in app bundles table
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url);
-            if (bundleUrl == null)
-            {
-                // if not found, create it (for everybody)
-                var jsBundle = new ScriptBundle(url).Include(url + ".js");
-                BundleTable.Bundles.Add(jsBundle);
-                bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url) + "?v=" + CacheTag;
-            }
+            if (bundleUrl != null) return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
+          
+            // if not found, create it (for everybody)
+            var jsBundle = new ScriptBundle(url).Include(url + ".js");
+            BundleTable.Bundles.Add(jsBundle);
+            bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url) + "?v=" + CacheTag;
             // return the script tag with the right bundle url
             return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
         }
@@ -229,7 +248,7 @@ namespace aspnet_mvc_helpers
                 var scr = urls.Aggregate("",
                   (current, url) =>
                       current +
-                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".min.js")));
+                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".min.js") + "?v=" + CacheTag));
 
                 return new MvcHtmlString(scr);
             }
