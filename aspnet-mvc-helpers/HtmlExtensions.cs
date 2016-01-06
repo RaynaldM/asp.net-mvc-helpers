@@ -18,7 +18,7 @@ namespace aspnet_mvc_helpers
     /// </summary>
     public static class HtmlExtensions
     {
-        private const String CDNRoot = "http://ajax.aspnetcdn.com/ajax/";
+        private const string CDNRoot = "http://ajax.aspnetcdn.com/ajax/";
         /// <summary>
         /// Tag for prevent caching
         /// </summary>
@@ -32,7 +32,7 @@ namespace aspnet_mvc_helpers
         /// <param name="expression">an axpression</param>
         /// <param name="htmlAttributes">htmlAttributes to add in std control</param>
         /// <returns>The Html of control</returns>
-        public static MvcHtmlString BootstrapRadioButtons<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, Object htmlAttributes = null)
+        public static MvcHtmlString BootstrapRadioButtons<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, object htmlAttributes = null)
         {
             //http://weblogs.asp.net/psheriff/creating-radio-buttons-using-bootstrap-and-mvc
             var metaData = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
@@ -40,7 +40,7 @@ namespace aspnet_mvc_helpers
             var sb = new StringBuilder();
             foreach (var name in names)
             {
-                var id = String.Format(
+                var id = string.Format(
                     "{0}_{1}_{2}",
                     html.ViewData.TemplateInfo.HtmlFieldPrefix,
                     metaData.PropertyName,
@@ -48,7 +48,7 @@ namespace aspnet_mvc_helpers
                     );
 
                 var radio = html.RadioButtonFor(expression, name, htmlAttributes).ToHtmlString();
-                var active = radio.Contains("data-val=\"true\"") ? " active" : String.Empty;
+                var active = radio.Contains("data-val=\"true\"") ? " active" : string.Empty;
                 sb.AppendFormat(
                     "<label id='{0}' class='btn btn-primary{3}'>{2}{1}</label>",
                     id,
@@ -58,7 +58,7 @@ namespace aspnet_mvc_helpers
                     );
             }
 
-            var result = String.Format("<div class='btn-group' data-toggle='buttons'>{0}</div>", sb);
+            var result = string.Format("<div class='btn-group' data-toggle='buttons'>{0}</div>", sb);
 
             return new MvcHtmlString(result);
         }
@@ -81,14 +81,14 @@ namespace aspnet_mvc_helpers
             if (metadata.Model != null)
             {
                 bool modelChecked;
-                if (Boolean.TryParse(metadata.Model.ToString(), out modelChecked))
+                if (bool.TryParse(metadata.Model.ToString(), out modelChecked))
                 {
                     isChecked = modelChecked;
                 }
             }
 
-            var result = String.Format(domElement, metadata.PropertyName, (!isChecked).ToString().ToLower()/*metadata.Model*/,
-                isChecked ? " checked='checked'" : String.Empty,
+            var result = string.Format(domElement, metadata.PropertyName, (!isChecked).ToString().ToLower()/*metadata.Model*/,
+                isChecked ? " checked='checked'" : string.Empty,
                 metadata.DisplayName ?? metadata.PropertyName,
                 isChecked.ToString().ToLower());
 
@@ -104,7 +104,7 @@ namespace aspnet_mvc_helpers
         /// <param name="expression">Model expression</param>
         /// <param name="htmlAttributes">Additional attributes</param>
         /// <returns></returns>
-        public static MvcHtmlString EmailFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, Object htmlAttributes)
+        public static MvcHtmlString EmailFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, object htmlAttributes)
         {
             // unsupported by safari
             var emailfor = html.TextBoxFor(expression, htmlAttributes);
@@ -122,10 +122,10 @@ namespace aspnet_mvc_helpers
         /// <param name="url">Url of the TS file</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns>The right JS file (.min if not debug)</returns>
-        public static MvcHtmlString TypeScript(this HtmlHelper helper, String url, Boolean debug = false)
+        public static MvcHtmlString TypeScript(this HtmlHelper helper, string url, bool debug = false)
         {
             // ReSharper disable once NotResolvedInText
-            if (debug && String.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(@"TypeScript Helper");
+            if (debug && string.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(@"TypeScript Helper");
 
             var suffixPos = url.LastIndexOf('.');
             if (debug && (suffixPos < 0 || url.Substring(suffixPos) != ".ts"))
@@ -146,22 +146,22 @@ namespace aspnet_mvc_helpers
         /// <param name="urls">List of URL of the TS file</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns>The right JS file (.min if not debug)</returns>
-        public static MvcHtmlString TypeScript(this HtmlHelper helper, String bundleName,
-            IEnumerable<String> urls, Boolean debug = false)
+        public static MvcHtmlString TypeScript(this HtmlHelper helper, string bundleName,
+            IEnumerable<string> urls, bool debug = false)
         {
             if (!debug)
             {
                 bundleName = "~/bundles/" + bundleName;
                 var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
                 if (bundleUrl != null)
-                    return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
+                    return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
             }
 
             var realUrls = new List<string>();
             foreach (var url in urls)
             {
                 // ReSharper disable once NotResolvedInText
-                if (debug && String.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(@"TypeScript Helper");
+                if (debug && string.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(@"TypeScript Helper");
 
                 var suffixPos = url.LastIndexOf('.');
                 if (debug && (suffixPos < 0 || url.Substring(suffixPos) != ".ts"))
@@ -180,11 +180,11 @@ namespace aspnet_mvc_helpers
         /// <param name="url">Ulr of JS file</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns>Return the script source</returns>
-        public static MvcHtmlString JavaScript(this HtmlHelper helper, String url, Boolean debug = false)
+        public static MvcHtmlString JavaScript(this HtmlHelper helper, string url, bool debug = false)
         {
             // if we are in debug mode, just return the script tag
             if (debug)
-                return new MvcHtmlString(String.Format(ScriptTag,
+                return new MvcHtmlString(string.Format(ScriptTag,
                     System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
 
             // try to find the bundle in app bundles table
@@ -197,7 +197,7 @@ namespace aspnet_mvc_helpers
                 bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url) + "?v=" + CacheTag;
             }
             // return the script tag with the right bundle url
-            return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
+            return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
         }
 
         /// <summary>
@@ -209,8 +209,8 @@ namespace aspnet_mvc_helpers
         /// <param name="urls">URL list of JS file</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns></returns>
-        public static MvcHtmlString JavaScript(this HtmlHelper helper, String bundleName,
-            IEnumerable<String> urls, Boolean debug = false)
+        public static MvcHtmlString JavaScript(this HtmlHelper helper, string bundleName,
+            IEnumerable<string> urls, bool debug = false)
         {
             // if we are in debug mode, just return the script tags
             if (debug)
@@ -219,11 +219,20 @@ namespace aspnet_mvc_helpers
                 var scr = urls.Aggregate("",
                     (current, url) =>
                         current +
-                        String.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
+                        string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
 
                 return new MvcHtmlString(scr);
             }
+            if (string.IsNullOrEmpty(bundleName))
+            {
+                // if BundleName is null, don't use the bundle and send just a script tag (with .min)
+                var scr = urls.Aggregate("",
+                  (current, url) =>
+                      current +
+                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".min.js")));
 
+                return new MvcHtmlString(scr);
+            }
             // try to find the bundle in app bundles table
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
             if (bundleUrl == null)
@@ -239,7 +248,7 @@ namespace aspnet_mvc_helpers
                 bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
             }
             // return the script tag with the right bundle url
-            return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
+            return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
         }
 
         /// <summary>
@@ -260,16 +269,16 @@ namespace aspnet_mvc_helpers
             if (!debug)
             {
                 // setup the script to load Jquery from CDN
-                var jQueryVersion = CDNRoot + "JQuery/" + String.Format("jquery-{0}.min.js", version);
+                var jQueryVersion = CDNRoot + "JQuery/" + string.Format("jquery-{0}.min.js", version);
                 // setup the script to load Jquery if CDN is fail
                 // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
                 // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
-                var switchNoCdn = String.Format("window.jQuery || document.write('<script src=\"{0}\">\x3C/script>')", bundleUrl);
+                var switchNoCdn = string.Format("window.jQuery || document.write('<script src=\"{0}\">\x3C/script>')", bundleUrl);
 
-                return new MvcHtmlString(String.Format(ScriptTag, jQueryVersion) + String.Format(ScriptTag, switchNoCdn));
+                return new MvcHtmlString(string.Format(ScriptTag, jQueryVersion) + string.Format(ScriptTag, switchNoCdn));
             }
 
-            return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
+            return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
         }
 
         /// <summary>
@@ -283,24 +292,24 @@ namespace aspnet_mvc_helpers
         /// <param name="version">Default version of JQuery Validate (1.13.1 by default)</param>
         /// <param name="mvcVersion">Default version of JQuery Validate Unobtrusive (5.2.3 by default)</param>
         /// <returns>Scripts url for validations</returns>
-        public static MvcHtmlString JQueryVal(this HtmlHelper helper, Boolean debug = false,
-            String bundleName = "~/bundles/jqueryval", String version = "1.14.0", String mvcVersion = "5.2.3")
+        public static MvcHtmlString JQueryVal(this HtmlHelper helper, bool debug = false,
+            string bundleName = "~/bundles/jqueryval", string version = "1.14.0", string mvcVersion = "5.2.3")
         {
             // todo : increase version when MS CDN is ready
             // todo : include localized message
             if (!debug)
             {
-                var scriptValidate = String.Format("{0}jquery.validate/{1}/jquery.validate.min.js", CDNRoot, version);
-                var scriptValidateAdditionalMethods = String.Format("{0}jquery.validate/{1}/additional-methods.min.js", CDNRoot, version);
-                var scriptUnobtrusive = String.Format("{0}mvc/{1}/jquery.validate.unobtrusive.min.js", CDNRoot, mvcVersion);
+                var scriptValidate = string.Format("{0}jquery.validate/{1}/jquery.validate.min.js", CDNRoot, version);
+                var scriptValidateAdditionalMethods = string.Format("{0}jquery.validate/{1}/additional-methods.min.js", CDNRoot, version);
+                var scriptUnobtrusive = string.Format("{0}mvc/{1}/jquery.validate.unobtrusive.min.js", CDNRoot, mvcVersion);
                 return new MvcHtmlString(
-                        String.Format(ScriptTag, scriptValidate) +
-                        String.Format(ScriptTag, scriptValidateAdditionalMethods) +
-                        String.Format(ScriptTag, scriptUnobtrusive));
+                        string.Format(ScriptTag, scriptValidate) +
+                        string.Format(ScriptTag, scriptValidateAdditionalMethods) +
+                        string.Format(ScriptTag, scriptUnobtrusive));
 
             }
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
-            return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
+            return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
         }
 
         /// <summary>
@@ -322,7 +331,7 @@ namespace aspnet_mvc_helpers
 
             name += "?v=" + CacheTag;
 
-            return new MvcHtmlString(String.Format("<link rel='stylesheet' href='{0}'>", System.Web.VirtualPathUtility.ToAbsolute(name)));
+            return new MvcHtmlString(string.Format("<link rel='stylesheet' href='{0}'>", System.Web.VirtualPathUtility.ToAbsolute(name)));
         }
 
         /// <summary>
@@ -333,12 +342,12 @@ namespace aspnet_mvc_helpers
         /// <param name="helper">HTML context</param>
         /// <param name="language">Language of JS file</param>
         /// <returns>Url of JSON/JS Resources</returns>
-        public static MvcHtmlString ResourcesJS(this HtmlHelper helper, String language = "en")
+        public static MvcHtmlString ResourcesJS(this HtmlHelper helper, string language = "en")
         {
             const string resxName = "~/bundles/resources";
             var culture = helper.BrowserCulture();
-            String fullLang = String.Empty;
-            String isoLang = "." + language;
+            string fullLang = string.Empty;
+            string isoLang = "." + language;
 
             // by convention, English (en) is the main language
             // and it should not be modified
@@ -357,7 +366,7 @@ namespace aspnet_mvc_helpers
                             BundleTable.Bundles.ResolveBundleUrl(resxName + isoLang) ??
                             BundleTable.Bundles.ResolveBundleUrl(resxName);
 
-            return new MvcHtmlString(String.Format(ScriptTag, bundleUrl));
+            return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
         }
 
         /// <summary>
@@ -410,13 +419,13 @@ namespace aspnet_mvc_helpers
         /// </param>
         /// <param name="altText">Alternate text for image (default : Gravatar Image)</param>
         /// <returns>url of Gravatar image</returns>
-        public static MvcHtmlString GravatarImage(this HtmlHelper helper, String mailAdd,
-            int size = 80, String @default = "404", String altText = "Gravatar Image")
+        public static MvcHtmlString GravatarImage(this HtmlHelper helper, string mailAdd,
+            int size = 80, string @default = "404", string altText = "Gravatar Image")
         {
             const string gravatarUrl = "<img src='http://www.gravatar.com/avatar/{0}?s={1}&d={2}'  alt='{3}'>";
-            var hash = (String.IsNullOrWhiteSpace(mailAdd)) ? "unknow" : MD5Helpers.GetMd5Hash(mailAdd);
+            var hash = (string.IsNullOrWhiteSpace(mailAdd)) ? "unknow" : MD5Helpers.GetMd5Hash(mailAdd);
 
-            return new MvcHtmlString(String.Format(gravatarUrl, hash, size, @default, altText));
+            return new MvcHtmlString(string.Format(gravatarUrl, hash, size, @default, altText));
         }
 
         ///  <summary>
@@ -438,13 +447,13 @@ namespace aspnet_mvc_helpers
         /// </param>
         /// <param name="altText">Alternate text for image (default : Gravatar Image)</param>
         /// <returns>url of Gravatar image</returns>
-        public static String CreateGravatarUrl(String mailAdd,
-           int size = 80, String @default = "404", String altText = "Gravatar Image")
+        public static string CreateGravatarUrl(string mailAdd,
+           int size = 80, string @default = "404", string altText = "Gravatar Image")
         {
             const string gravatarUrl = "<img src='http://www.gravatar.com/avatar/{0}?s={1}&d={2}'  alt='{3}'>";
-            var hash = (String.IsNullOrWhiteSpace(mailAdd)) ? "unknow" : MD5Helpers.GetMd5Hash(mailAdd);
+            var hash = (string.IsNullOrWhiteSpace(mailAdd)) ? "unknow" : MD5Helpers.GetMd5Hash(mailAdd);
 
-            return String.Format(gravatarUrl, hash, size, @default, altText);
+            return string.Format(gravatarUrl, hash, size, @default, altText);
         }
 
         #region GlyphIconLink
@@ -654,19 +663,19 @@ namespace aspnet_mvc_helpers
         /// <param name="helper">Html Context</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns>Html String to inject in page</returns>
-        public static MvcHtmlString AnalyticsScript(this HtmlHelper helper, Boolean debug = false)
+        public static MvcHtmlString AnalyticsScript(this HtmlHelper helper, bool debug = false)
         {
 
             var applicationInsightsKey = WebConfigurationManager.AppSettings["applicationInsights"];
 
-            if (String.IsNullOrEmpty(applicationInsightsKey) && debug) return null;
+            if (string.IsNullOrEmpty(applicationInsightsKey) && debug) return null;
 
             var script = new StringBuilder("<script type='text/javascript'>");
 
             if (!debug)
             {
                 var googlekey = WebConfigurationManager.AppSettings["GoogleAnalytics"];
-                if (!String.IsNullOrWhiteSpace(googlekey))
+                if (!string.IsNullOrWhiteSpace(googlekey))
                 {
                     var googleScript =
                         "(function (i, s, o, g, r, a, m) {i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {(i[r].q = i[r].q || []).push(arguments)}, i[r].l = 1 * new Date(); a = s.createElement(o), m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');ga('create', '"
@@ -675,7 +684,7 @@ namespace aspnet_mvc_helpers
                     script.AppendLine(googleScript);
                 }
             }
-            if (!String.IsNullOrEmpty(applicationInsightsKey))
+            if (!string.IsNullOrEmpty(applicationInsightsKey))
             {
                 script.AppendFormat("window.applicationInsightsKey='{0}';", applicationInsightsKey);
             }
@@ -759,7 +768,7 @@ namespace aspnet_mvc_helpers
             }
         }
 
-        private static String SimpleHtmlMinifier(String html)
+        private static string SimpleHtmlMinifier(string html)
         {
             html = Regex.Replace(html, @"(?<=[^])\t{2,}|(?<=[>])\s{2,}(?=[<])|(?<=[>])\s{2,11}(?=[<])|(?=[\n])\s{2,}", "");
             html = Regex.Replace(html, @"[ \f\r\t\v]?([\n\xFE\xFF/{}[\];,<>*%&|^!~?:=])[\f\r\t\v]?", "$1");
