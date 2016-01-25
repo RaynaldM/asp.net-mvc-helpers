@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
@@ -63,7 +62,7 @@ namespace aspnet_mvc_helpers
     /// <summary>
     /// Decorates any MVC route that needs to have client requests limited by time.
     /// http://stackoverflow.com/questions/33969/best-way-to-implement-request-throttling-in-asp-net-mvc
-    /// [Throttle(Name="TestThrottle", Message = "You must wait {n} seconds before accessing this url again.", Seconds = 5)]
+    /// [Throttle(Name="TestThrottle", Message = "You must wait {0} seconds before accessing this url again.", Seconds = 5)]
     ///public ActionResult TestThrottle()
     /// </summary>
     /// <remarks>
@@ -91,10 +90,31 @@ namespace aspnet_mvc_helpers
         /// </summary>
         public string Message { get; set; }
 
+        /// <summary>
+        /// Use Session ID in cache key (if session exist)
+        /// </summary>
+        public bool UseSessionId { get; set; }
+
+        /// <summary>
+        /// Use Session ID in cache key (if session exist)
+        /// </summary>
+        public bool UseUserAgent { get; set; }
+
+        /// <summary>
+        /// Attribute contructor, set UseUserAgent=true
+        /// </summary>
+        public ThrottleAttribute()
+        {
+            UseUserAgent = true;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext c)
         {
-            var key = string.Concat(Name, "-", c.HttpContext.Request.UserHostAddress, "-", c.HttpContext.Request.UserAgent);
-            //c.HttpContext.Session.SessionID;
+            var key = string.Concat(Name, "-", c.HttpContext.Request.UserHostAddress);
+            if (UseUserAgent)
+                key += "-" + c.HttpContext.Request.UserAgent;
+            if (UseSessionId && c.HttpContext.Session != null)
+                key += c.HttpContext.Session.SessionID;
             var allowExecute = false;
 
             if (HttpRuntime.Cache[key] == null)
@@ -110,15 +130,13 @@ namespace aspnet_mvc_helpers
                 allowExecute = true;
             }
 
-            if (!allowExecute)
-            {
-                if (String.IsNullOrEmpty(Message))
-                    Message = "You may only perform this action every {n} seconds.";
+            if (allowExecute) return;
+            if (string.IsNullOrEmpty(Message))
+                Message = "You may only perform this action every {0} seconds.";
 
-                c.Result = new ContentResult { Content = Message.Replace("{n}", Seconds.ToString()) };
-                // see 409 - http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-                c.HttpContext.Response.StatusCode = 429;
-            }
+            c.Result = new ContentResult { Content = string.Format(Message, Seconds) };
+            // see 429 - https://tools.ietf.org/html/rfc6585ml
+            c.HttpContext.Response.StatusCode = 429;
         }
     }
 
