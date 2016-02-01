@@ -290,13 +290,15 @@ namespace aspnet_mvc_helpers
             if (!debug)
             {
                 // setup the script to load Jquery from CDN
-                var jQueryVersion = GoogleCDNRoot  + string.Format("jquery/{0}/jquery-min.js", version);
+                var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery-min.js", version);
                 // setup the script to load Jquery if CDN is fail
                 // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
                 // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
-                var switchNoCdn = string.Format("window.jQuery || document.write('<script src=\"{0}\">\x3C/script>')", bundleUrl);
+                var switchNoCdn = string.Format("<script>(window.jQuery)||document.write('<script src=\"{0}\">\x3C/script>');</script>", bundleUrl);
 
-                return new MvcHtmlString(string.Format(ScriptTag, jQueryVersion) + string.Format(ScriptTag, switchNoCdn));
+                //   string.Format("<script src='{0}'></script><script>(window.jQuery)||document.write('<script src=\"{1}\">\x3C/script>');</script>", jQueryVersion, bundleUrl);
+
+                return new MvcHtmlString(string.Format(ScriptTag, jQueryVersion) + switchNoCdn);
             }
 
             return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
