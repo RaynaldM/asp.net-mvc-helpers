@@ -18,7 +18,9 @@ namespace aspnet_mvc_helpers
     /// </summary>
     public static class HtmlExtensions
     {
-        private const string CDNRoot = "http://ajax.aspnetcdn.com/ajax/";
+        private const string MicrosoftCDNRoot = "https://ajax.aspnetcdn.com/ajax/";
+        private const string GoogleCDNRoot = "https://ajax.googleapis.com/ajax/libs/";
+
         /// <summary>
         /// Tag for prevent caching
         /// </summary>
@@ -210,7 +212,7 @@ namespace aspnet_mvc_helpers
             // try to find the bundle in app bundles table
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(url);
             if (bundleUrl != null) return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
-          
+
             // if not found, create it (for everybody)
             var jsBundle = new ScriptBundle(url).Include(url + ".js");
             BundleTable.Bundles.Add(jsBundle);
@@ -279,16 +281,16 @@ namespace aspnet_mvc_helpers
         /// <param name="helper">HTML Context</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <param name="bundleName">Default name of JQuery bundle (default : ~/bundles/jquery) </param>
-        /// <param name="version">Default version of JQuery (2.1.3 by default)</param>
+        /// <param name="version">Default version of JQuery (2.1.4 by default)</param>
         /// <returns>Scripts url for JQuery</returns>
-        public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false, string bundleName = "~/bundles/jquery", string version = "2.1.3")
+        public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false, string bundleName = "~/bundles/jquery", string version = "2.2.0")
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
             if (!debug)
             {
                 // setup the script to load Jquery from CDN
-                var jQueryVersion = CDNRoot + "JQuery/" + string.Format("jquery-{0}.min.js", version);
+                var jQueryVersion = GoogleCDNRoot  + string.Format("jquery/{0}/jquery-min.js", version);
                 // setup the script to load Jquery if CDN is fail
                 // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
                 // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
@@ -318,9 +320,9 @@ namespace aspnet_mvc_helpers
             // todo : include localized message
             if (!debug)
             {
-                var scriptValidate = string.Format("{0}jquery.validate/{1}/jquery.validate.min.js", CDNRoot, version);
-                var scriptValidateAdditionalMethods = string.Format("{0}jquery.validate/{1}/additional-methods.min.js", CDNRoot, version);
-                var scriptUnobtrusive = string.Format("{0}mvc/{1}/jquery.validate.unobtrusive.min.js", CDNRoot, mvcVersion);
+                var scriptValidate = string.Format("{0}jquery.validate/{1}/jquery.validate.min.js", MicrosoftCDNRoot, version);
+                var scriptValidateAdditionalMethods = string.Format("{0}jquery.validate/{1}/additional-methods.min.js", MicrosoftCDNRoot, version);
+                var scriptUnobtrusive = string.Format("{0}mvc/{1}/jquery.validate.unobtrusive.min.js", MicrosoftCDNRoot, mvcVersion);
                 return new MvcHtmlString(
                         string.Format(ScriptTag, scriptValidate) +
                         string.Format(ScriptTag, scriptValidateAdditionalMethods) +
@@ -681,8 +683,9 @@ namespace aspnet_mvc_helpers
         /// </summary>
         /// <param name="helper">Html Context</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
+        /// <param name="useUserId">Use the user id (from IPrincipal) in ga (if user is connected)</param>
         /// <returns>Html String to inject in page</returns>
-        public static MvcHtmlString AnalyticsScript(this HtmlHelper helper, bool debug = false)
+        public static MvcHtmlString AnalyticsScript(this HtmlHelper helper, bool debug = false, bool useUserId = false)
         {
 
             var applicationInsightsKey = WebConfigurationManager.AppSettings["applicationInsights"];
@@ -697,9 +700,15 @@ namespace aspnet_mvc_helpers
                 if (!string.IsNullOrWhiteSpace(googlekey))
                 {
                     var googleScript =
-                        "(function (i, s, o, g, r, a, m) {i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {(i[r].q = i[r].q || []).push(arguments)}, i[r].l = 1 * new Date(); a = s.createElement(o), m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');ga('create', '"
-                            + googlekey + "', 'auto');ga('send', 'pageview');";
+                        "(function (i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a, m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','"
+                            + googlekey + "','auto');ga('send','pageview');";
 
+                    if (useUserId && helper.ViewContext.HttpContext.Request.IsAuthenticated)
+                    {
+                        // Set the userid (an hashcode of name) for a better tracing
+                        // https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference#userId
+                        googleScript += string.Format("ga('set','userId','{0}');", helper.ViewContext.HttpContext.User.Identity.Name.GetHashCode());
+                    }
                     script.AppendLine(googleScript);
                 }
             }
