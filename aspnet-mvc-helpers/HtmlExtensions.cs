@@ -294,8 +294,9 @@ namespace aspnet_mvc_helpers
                 // setup the script to load Jquery if CDN is fail
                 // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
                 // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
-                var switchNoCdn = string.Format("<script>(window.jQuery)||document.write('<script src=\"{0}\"></script>');</script>", bundleUrl);
-
+                var switchNoCdn =
+                       string.Format("\x3Cscript>(window.jQuery)||document.write('<script src=\"{0}\"><\\/script>');</script>",
+                           bundleUrl);
                 //   string.Format("<script src='{0}'></script><script>(window.jQuery)||document.write('<script src=\"{1}\">\x3C/script>');</script>", jQueryVersion, bundleUrl);
                 return new MvcHtmlString(string.Format(ScriptTag, jQueryVersion) + switchNoCdn);
             }
