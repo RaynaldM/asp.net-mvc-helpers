@@ -287,21 +287,18 @@ namespace aspnet_mvc_helpers
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
-            if (!debug)
-            {
-                // setup the script to load Jquery from CDN
-                var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery-min.js", version);
-                // setup the script to load Jquery if CDN is fail
-                // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
-                // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
-                var switchNoCdn =
-                       string.Format("\x3Cscript>(window.jQuery)||document.write('<script src=\"{0}\"><\\/script>');</script>",
-                           bundleUrl);
-                //   string.Format("<script src='{0}'></script><script>(window.jQuery)||document.write('<script src=\"{1}\">\x3C/script>');</script>", jQueryVersion, bundleUrl);
-                return new MvcHtmlString(string.Format(ScriptTag, jQueryVersion) + switchNoCdn);
-            }
+            if (debug) return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
 
-            return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
+            // setup the script to load Jquery from CDN
+            var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery.min.js", version);
+            // setup the script to load Jquery if CDN is fail
+            // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
+            // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
+            var switchNoCdn =
+                string.Format("\x3Cscript>(window.jQuery)||document.write('<script src=\"{0}\"><\\/script>');</script>",
+                    bundleUrl);
+            //   string.Format("<script src='{0}'></script><script>(window.jQuery)||document.write('<script src=\"{1}\">\x3C/script>');</script>", jQueryVersion, bundleUrl);
+            return new MvcHtmlString(string.Format(ScriptTag, jQueryVersion) + switchNoCdn);
         }
 
         /// <summary>
