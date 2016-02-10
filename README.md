@@ -15,6 +15,9 @@ Create a radio button MVC compatible and BootStrap compatible
 Create a checkbox in BootStrap Standard
  (http://getbootstrap.com/css/#forms-controls)
       
+#####BootstrapValidationSummary
+Decorate the classic validation summary with bootstrap alert
+
 #####EmailFor
 set the mail type on an input (HTML5)
 
