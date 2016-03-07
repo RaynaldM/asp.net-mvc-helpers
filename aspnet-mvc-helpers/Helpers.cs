@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -363,5 +365,38 @@ namespace aspnet_mvc_helpers
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Some functions to manipulate attributes and properties decoration
+    /// </summary>
+    public class AttributesHelpers
+    {
+        /// <summary>
+        /// Override Class Attribute with a metadata class
+        /// </summary>
+        /// <example>
+        ///
+        /// public MyClass
+        /// {
+        ///    public string MyProperty {get;set;}
+        /// }
+        /// 
+        /// public MetadataForMyClass
+        /// {
+        ///    [Display(Name="My class")]
+        ///    public string MyProperty {get;set;}
+        /// }
+        /// 
+        /// in your global.asax
+        /// AttributesHelpers.OverrideMetaData(typeof(MyClass),typeof(MetadataForMyClass))
+        /// </example>
+        /// <param name="classToOverride"></param>
+        /// <param name="overriderMetaData"></param>
+        public static void OverrideMetaData(Type classToOverride, Type overriderMetaData)
+        {
+            var provider = new AssociatedMetadataTypeTypeDescriptionProvider(classToOverride, overriderMetaData);
+            TypeDescriptor.AddProviderTransparent(provider, classToOverride);
+        }
     }
 }

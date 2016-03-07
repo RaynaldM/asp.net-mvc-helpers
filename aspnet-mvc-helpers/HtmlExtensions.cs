@@ -25,7 +25,7 @@ namespace aspnet_mvc_helpers
         /// Tag for prevent caching
         /// </summary>
         public static ShortGuid CacheTag = new ShortGuid(Guid.NewGuid());
-   
+
         /// <summary>
         /// set the mail type on an input (HTML5)
         /// </summary>
@@ -102,34 +102,37 @@ namespace aspnet_mvc_helpers
             }
             return helper.JavaScript(bundleName, realUrls, debug);
         }
-        /// <summary>
-        /// Load a JS, create a Bundle 
-        /// and set the script tag to load it
-        /// </summary>
-        /// <param name="helper">The HTML context</param>
-        /// <param name="url">Ulr of JS file</param>
-        /// <param name="debug">Set if we we are in debug mode(true)</param>
-        /// <returns>Return the script source</returns>
-        public static MvcHtmlString JavaScript(this HtmlHelper helper, string url, bool debug = false)
-        {
-            return JavaScript(helper, url, true, debug);
-        }
+        ///// <summary>
+        ///// Load a JS, create a Bundle 
+        ///// and set the script tag to load it
+        ///// </summary>
+        ///// <param name="helper">The HTML context</param>
+        ///// <param name="url">Ulr of JS file without the JS extention</param>
+        ///// <param name="debug">Set if we we are in debug mode(true)</param>
+        ///// <returns>Return the script source</returns>
+        //public static MvcHtmlString JavaScript(this HtmlHelper helper, string url, bool debug = false)
+        //{
+        //    return JavaScript(helper, url, true, debug);
+        //}
 
         /// <summary>
         /// Load a JS, create a Bundle 
         /// and set the script tag to load it
         /// </summary>
         /// <param name="helper">The HTML context</param>
-        /// <param name="url">Ulr of JS file</param>
+        /// <param name="url">Ulr of JS file without the JS extention</param>
         /// <param name="noBundle"></param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns>Return the script source</returns>
         public static MvcHtmlString JavaScript(this HtmlHelper helper, string url, bool noBundle = false, bool debug = false)
         {
+            if (url.EndsWith(".js"))
+                url = url.Substring(0, url.Length - 3);
+
             // if we are in debug mode, just return the script tag
             if (debug)
                 return new MvcHtmlString(string.Format(ScriptTag,
-                    System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
+                    System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow.Ticks));
 
             if (!noBundle)
             {
@@ -156,7 +159,7 @@ namespace aspnet_mvc_helpers
         /// </summary>
         /// <param name="helper">The HTML context</param>
         /// <param name="bundleName">The name of the future bundle</param>
-        /// <param name="urls">URL list of JS file</param>
+        /// <param name="urls">URL list of JS file  without the JS extention</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <returns></returns>
         public static MvcHtmlString JavaScript(this HtmlHelper helper, string bundleName,
@@ -169,7 +172,7 @@ namespace aspnet_mvc_helpers
                 var scr = urls.Aggregate("",
                     (current, url) =>
                         current +
-                        string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow));
+                        string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow.Ticks));
 
                 return new MvcHtmlString(scr);
             }
@@ -367,14 +370,16 @@ namespace aspnet_mvc_helpers
         ///     blank: a transparent PNG image (border added to HTML below for demonstration purposes)
         /// </param>
         /// <param name="altText">Alternate text for image (default : Gravatar Image)</param>
+        /// <param name="cssClass">Add a special class on img tag</param>
         /// <returns>url of Gravatar image</returns>
         public static MvcHtmlString GravatarImage(this HtmlHelper helper, string mailAdd,
-            int size = 80, string @default = "404", string altText = "Gravatar Image")
+            int size = 80, string @default = "404", string cssClass = "", string altText = "Gravatar Image")
         {
-            const string gravatarUrl = "<img src='http://www.gravatar.com/avatar/{0}?s={1}&d={2}'  alt='{3}'>";
+            const string gravatarUrl = "<img src='http://www.gravatar.com/avatar/{0}?s={1}&d={2}' {4} alt='{3}'>";
             var hash = (string.IsNullOrWhiteSpace(mailAdd)) ? "unknow" : MD5Helpers.GetMd5Hash(mailAdd);
+            if (cssClass != "") cssClass = "class='" + cssClass + "'";
 
-            return new MvcHtmlString(string.Format(gravatarUrl, hash, size, @default, altText));
+            return new MvcHtmlString(string.Format(gravatarUrl, hash, size, @default, altText, cssClass));
         }
 
         ///  <summary>
@@ -405,201 +410,6 @@ namespace aspnet_mvc_helpers
             return string.Format(gravatarUrl, hash, size, @default, altText);
         }
 
-        #region GlyphIconLink
-
-        /// <summary>
-        /// example usage:
-        /// <li>@Html.ActionLinkWithGlyphIcon(Url.Action("Index"),
-        ///                                   "Back to List",
-        ///                                   "glyphicon-list")</li>
-        /// instead of "glyphicon-list", we could also use GlyphIcons.list
-        /// </summary>
-        /// <param name="helper"></param>
-        /// <param name="action">Mvc action url</param>
-        /// <param name="text">Text for link</param>
-        /// <param name="glyphs">Name of the glyphs icon</param>
-        /// <param name="tooltip">Tooltip text</param>
-        /// <param name="htmlAttributes">Other hmtl attributes (like css class)</param>
-        /// <returns></returns>
-        public static MvcHtmlString ActionLinkWithGlyphIcon(this HtmlHelper helper,
-            string action,
-            string text,
-            string glyphs,
-            string tooltip = "",
-            IDictionary<string, object> htmlAttributes = null)
-        {
-
-            var glyph = new TagBuilder("span");
-            glyph.MergeAttribute("class", string.Format("glyphicon {0}", glyphs));
-
-            var anchor = new TagBuilder("a");
-            anchor.MergeAttribute("href", action);
-
-            if (!string.IsNullOrEmpty(tooltip))
-                anchor.MergeAttributes(
-                    new Dictionary<string, object>
-                    {
-                            { "rel", "tooltip" },
-                            { "data-placement", "top" },
-                            { "title", tooltip }
-                        }
-                    );
-
-            if (htmlAttributes != null)
-                anchor.MergeAttributes(htmlAttributes, true);
-
-            anchor.InnerHtml = glyph + " " + text;
-
-            return MvcHtmlString.Create(anchor.ToString());
-        }
-
-        #region icon constants
-#pragma warning disable 1591
-        public const string Glass = "glyphglyphicon-glass";
-
-        public const string Music = "glyphicon-music";
-        public const string Search = "glyphicon-search";
-        public const string Envelope = "glyphicon-envelope";
-        public const string Heart = "glyphicon-heart";
-        public const string Star = "glyphicon-star";
-        public const string StarEmpty = "glyphicon-star-empty";
-        public const string User = "glyphicon-user";
-        public const string Film = "glyphicon-film";
-        public const string ThLarge = "glyphicon-th-large";
-        public const string Th = "glyphicon-th";
-        public const string ThList = "glyphicon-th-list";
-        public const string Ok = "glyphicon-ok";
-        public const string Remove = "glyphicon-remove";
-        public const string ZoomIn = "glyphicon-zoom-in";
-        public const string ZoomOut = "glyphicon-zoom-out";
-        public const string Off = "glyphicon-off";
-        public const string Signal = "glyphicon-signal";
-        public const string Cog = "glyphicon-cog";
-        public const string Trash = "glyphicon-trash";
-        public const string Home = "glyphicon-home";
-        public const string File = "glyphicon-file";
-        public const string Time = "glyphicon-time";
-        public const string Road = "glyphicon-road";
-        public const string DownloadAlt = "glyphicon-download-alt";
-        public const string Download = "glyphicon-download";
-        public const string Upload = "glyphicon-upload";
-        public const string Inbox = "glyphicon-inbox";
-        public const string PlayCircle = "glyphicon-play-circle";
-        public const string Repeat = "glyphicon-repeat";
-        public const string Refresh = "glyphicon-refresh";
-        public const string ListAlt = "glyphicon-list-alt";
-        public const string Lock = "glyphicon-lock";
-        public const string Flag = "glyphicon-flag";
-        public const string Headphones = "glyphicon-headphones";
-        public const string VolumeOff = "glyphicon-volume-off";
-        public const string VolumeDown = "glyphicon-volume-down";
-        public const string VolumeUp = "glyphicon-volume-up";
-        public const string Qrcode = "glyphicon-qrcode";
-        public const string Barcode = "glyphicon-barcode";
-        public const string Tag = "glyphicon-tag";
-        public const string Tags = "glyphicon-tags";
-        public const string Book = "glyphicon-book";
-        public const string Bookmark = "glyphicon-bookmark";
-        public const string Print = "glyphicon-print";
-        public const string Camera = "glyphicon-camera";
-        public const string Font = "glyphicon-font";
-        public const string Bold = "glyphicon-bold";
-        public const string Italic = "glyphicon-italic";
-        public const string TextHeight = "glyphicon-text-height";
-        public const string TextWidth = "glyphicon-text-width";
-        public const string AlignLeft = "glyphicon-align-left";
-        public const string AlignCenter = "glyphicon-align-center";
-        public const string AlignRight = "glyphicon-align-right";
-        public const string AlignJustify = "glyphicon-align-justify";
-        public const string List = "glyphicon-list";
-        public const string IndentLeft = "glyphicon-indent-left";
-        public const string IndentRight = "glyphicon-indent-right";
-        public const string FacetimeVideo = "glyphicon-facetime-video";
-        public const string Picture = "glyphicon-picture";
-        public const string Pencil = "glyphicon-pencil";
-        public const string MapMarker = "glyphicon-map-marker";
-        public const string Adjust = "glyphicon-adjust";
-        public const string Tint = "glyphicon-tint";
-        public const string Edit = "glyphicon-edit";
-        public const string Share = "glyphicon-share";
-        public const string Check = "glyphicon-check";
-        public const string Move = "glyphicon-move";
-        public const string StepBackward = "glyphicon-step-backward";
-        public const string FastBackward = "glyphicon-fast-backward";
-        public const string Backward = "glyphicon-backward";
-        public const string Play = "glyphicon-play";
-        public const string Pause = "glyphicon-pause";
-        public const string Stop = "glyphicon-stop";
-        public const string Forward = "glyphicon-forward";
-        public const string FastForward = "glyphicon-fast-forward";
-        public const string StepForward = "glyphicon-step-forward";
-        public const string Eject = "glyphicon-eject";
-        public const string ChevronLeft = "glyphicon-chevron-left";
-        public const string ChevronRight = "glyphicon-chevron-right";
-        public const string PlusSign = "glyphicon-plus-sign";
-        public const string MinusSign = "glyphicon-minus-sign";
-        public const string RemoveSign = "glyphicon-remove-sign";
-        public const string OkSign = "glyphicon-ok-sign";
-        public const string QuestionSign = "glyphicon-question-sign";
-        public const string InfoSign = "glyphicon-info-sign";
-        public const string Screenshot = "glyphicon-screenshot";
-        public const string RemoveCircle = "glyphicon-remove-circle";
-        public const string OkCircle = "glyphicon-ok-circle";
-        public const string BanCircle = "glyphicon-ban-circle";
-        public const string ArrowLeft = "glyphicon-arrow-left";
-        public const string ArrowRight = "glyphicon-arrow-right";
-        public const string ArrowUp = "glyphicon-arrow-up";
-        public const string ArrowDown = "glyphicon-arrow-down";
-        public const string ShareAlt = "glyphicon-share-alt";
-        public const string ResizeFull = "glyphicon-resize-full";
-        public const string ResizeSmall = "glyphicon-resize-small";
-        public const string Plus = "glyphicon-plus";
-        public const string Minus = "glyphicon-minus";
-        public const string Asterisk = "glyphicon-asterisk";
-        public const string ExclamationSign = "glyphicon-exclamation-sign";
-        public const string Gift = "glyphicon-gift";
-        public const string Leaf = "glyphicon-leaf";
-        public const string Fire = "glyphicon-fire";
-        public const string EyeOpen = "glyphicon-eye-open";
-        public const string EyeClose = "glyphicon-eye-close";
-        public const string WarningSign = "glyphicon-warning-sign";
-        public const string Plane = "glyphicon-plane";
-        public const string Calendar = "glyphicon-calendar";
-        public const string Random = "glyphicon-random";
-        public const string Comment = "glyphicon-comment";
-        public const string Magnet = "glyphicon-magnet";
-        public const string ChevronUp = "glyphicon-chevron-up";
-        public const string ChevronDown = "glyphicon-chevron-down";
-        public const string Retweet = "glyphicon-retweet";
-        public const string ShoppingCart = "glyphicon-shopping-cart";
-        public const string FolderClose = "glyphicon-folder-close";
-        public const string FolderOpen = "glyphicon-folder-open";
-        public const string ResizeVertical = "glyphicon-resize-vertical";
-        public const string ResizeHorizontal = "glyphicon-resize-horizontal";
-        public const string Hdd = "glyphicon-hdd";
-        public const string Bullhorn = "glyphicon-bullhorn";
-        public const string Bell = "glyphicon-bell";
-        public const string Certificate = "glyphicon-certificate";
-        public const string ThumbsUp = "glyphicon-thumbs-up";
-        public const string ThumbsDown = "glyphicon-thumbs-down";
-        public const string HandRight = "glyphicon-hand-right";
-        public const string HandLeft = "glyphicon-hand-left";
-        public const string HandUp = "glyphicon-hand-up";
-        public const string HandDown = "glyphicon-hand-down";
-        public const string CircleArrowRight = "glyphicon-circle-arrow-right";
-        public const string CircleArrowLeft = "glyphicon-circle-arrow-left";
-        public const string CircleArrowUp = "glyphicon-circle-arrow-up";
-        public const string CircleArrowDown = "glyphicon-circle-arrow-down";
-        public const string Globe = "glyphicon-globe";
-        public const string Wrench = "glyphicon-wrench";
-        public const string Tasks = "glyphicon-tasks";
-        public const string Filter = "glyphicon-filter";
-        public const string Briefcase = "glyphicon-briefcase";
-        public const string Fullscreen = "glyphicon-fullscreen";
-#pragma warning restore 1591
-        #endregion
-
-        #endregion
 
         /// <summary>
         /// Add a bundle with
