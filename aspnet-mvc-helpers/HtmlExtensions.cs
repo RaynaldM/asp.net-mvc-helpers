@@ -64,7 +64,7 @@ namespace aspnet_mvc_helpers
 
             var realName = url.Substring(0, suffixPos);
 
-            return helper.JavaScript(realName, debug);
+            return helper.JavaScript(realName, true, debug);
         }
 
         /// <summary>
