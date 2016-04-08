@@ -172,7 +172,7 @@ namespace aspnet_mvc_helpers
                 var scr = urls.Aggregate("",
                     (current, url) =>
                         current +
-                        string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".js") + "?v=" + DateTime.UtcNow.Ticks));
+                        string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url) + "?v=" + DateTime.UtcNow.Ticks));
 
                 return new MvcHtmlString(scr);
             }
@@ -182,7 +182,7 @@ namespace aspnet_mvc_helpers
                 var scr = urls.Aggregate("",
                   (current, url) =>
                       current +
-                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url + ".min.js") + "?v=" + CacheTag));
+                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url.Substring(0,url.LastIndexOf(".js", StringComparison.Ordinal)) + ".min.js") + "?v=" + CacheTag));
 
                 return new MvcHtmlString(scr);
             }
@@ -195,7 +195,7 @@ namespace aspnet_mvc_helpers
                 foreach (var url in urls)
                 {
                     // include all js in bundle
-                    jsBundle.Include(url + ".js");
+                    jsBundle.Include(url);
                 }
                 BundleTable.Bundles.Add(jsBundle);
                 bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
@@ -213,9 +213,10 @@ namespace aspnet_mvc_helpers
         /// <param name="helper">HTML Context</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <param name="bundleName">Default name of JQuery bundle (default : ~/bundles/jquery) </param>
-        /// <param name="version">Default version of JQuery (2.1.4 by default)</param>
+        /// <param name="version">Default version of JQuery (2.2.2 by default)</param>
         /// <returns>Scripts url for JQuery</returns>
-        public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false, string bundleName = "~/bundles/jquery", string version = "2.2.0")
+        public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false,
+            string bundleName = "~/bundles/jquery", string version = "2.2.2")
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
@@ -241,7 +242,7 @@ namespace aspnet_mvc_helpers
         /// <param name="helper">HTML Context</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <param name="bundleName">Default name of JQuery Validate bundle (default : ~/bundles/jqueryval)</param>
-        /// <param name="version">Default version of JQuery Validate (1.13.1 by default)</param>
+        /// <param name="version">Default version of JQuery Validate (1.14.0 by default)</param>
         /// <param name="mvcVersion">Default version of JQuery Validate Unobtrusive (5.2.3 by default)</param>
         /// <returns>Scripts url for validations</returns>
         public static MvcHtmlString JQueryVal(this HtmlHelper helper, bool debug = false,
@@ -278,7 +279,7 @@ namespace aspnet_mvc_helpers
             if (!debug)
             {
                 // in release mode, we send the minify version of css
-                name = name.Substring(0, name.IndexOf('.')) + ".min.css";
+                name = name.Substring(0, name.LastIndexOf('.')) + ".min.css";
             }
 
             name += "?v=" + CacheTag;
