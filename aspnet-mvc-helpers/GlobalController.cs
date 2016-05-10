@@ -8,7 +8,7 @@ namespace aspnet_mvc_helpers
     /// <summary>
     /// A base controller with a culture thread setter 
     /// </summary>
-    public abstract class BaseController : Controller
+    public abstract class GlobalController : Controller
     {
         // Thank to http://afana.me/post/aspnet-mvc-internationalization.aspx
         protected override IAsyncResult BeginExecuteCore(AsyncCallback callback, object state)
