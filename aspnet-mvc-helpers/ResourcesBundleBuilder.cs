@@ -15,10 +15,10 @@ namespace aspnet_mvc_helpers
     /// </summary>
     public class ResourcesBundleBuilder : IBundleBuilder
     {
-        private readonly String _language;
-        private readonly String _javascriptName;
-        private readonly String _dllName;
-        private readonly String _nameSpace;
+        private readonly string _language;
+        private readonly string _javascriptName;
+        private readonly string _dllName;
+        private readonly string _nameSpace;
 
         /// <summary>
         /// Contructor
@@ -27,7 +27,7 @@ namespace aspnet_mvc_helpers
         /// <param name="nameSpace">Namespace of Resources</param>
         /// <param name="jsResourcesName">Name of js resources</param>
         /// <param name="lang">Based Language</param>
-        public ResourcesBundleBuilder(String dll, String nameSpace, String jsResourcesName = "rescJS", String lang = "en")
+        public ResourcesBundleBuilder(string dll, string nameSpace, string jsResourcesName = "rescJS", string lang = "en")
         {
             this._dllName = dll;
             this._nameSpace = nameSpace;
@@ -47,9 +47,9 @@ namespace aspnet_mvc_helpers
             try
             {
                 // Get the DLL by reflexion
-                var assem = Assembly.Load(this._dllName);
+                var assembly = Assembly.Load(this._dllName);
                 // Try to find the resources in DLL
-                var resourceSet = (new ResourceManager(this._nameSpace, assem))
+                var resourceSet = (new ResourceManager(this._nameSpace, assembly))
                     .GetResourceSet(new CultureInfo(this._language), true, true);
 
                 var content = new StringBuilder(";window." + this._javascriptName + "={");

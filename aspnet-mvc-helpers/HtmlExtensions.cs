@@ -216,7 +216,7 @@ namespace aspnet_mvc_helpers
         /// <param name="version">Default version of JQuery (2.2.2 by default)</param>
         /// <returns>Scripts url for JQuery</returns>
         public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false,
-            string bundleName = "~/bundles/jquery", string version = "2.2.2")
+            string bundleName = "~/bundles/jquery", string version = "2.2.3")
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
@@ -299,8 +299,8 @@ namespace aspnet_mvc_helpers
         {
             const string resxName = "~/bundles/resources";
             var culture = helper.BrowserCulture();
-            string fullLang = string.Empty;
-            string isoLang = "." + language;
+            var fullLang = string.Empty;
+            var isoLang = "." + language;
 
             // by convention, English (en) is the main language
             // and it should not be modified

@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes.cs" />
+    <Compile Include="BaseController.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="HtmlExtensions.cs" />
     <Compile Include="HtmlExtentions.Bootstrap.cs" />
