@@ -223,7 +223,9 @@ namespace aspnet_mvc_helpers
             if (debug) return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
 
             // setup the script to load Jquery from CDN
-            var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery.min.js", version);
+          //  var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery.min.js", version);
+            var jQueryVersion = MicrosoftCDNRoot + string.Format("jQuery/jquery-{0}.min.js", version);
+
             // setup the script to load Jquery if CDN is fail
             // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
             // &&  http://www.hanselman.com/blog/CDNsFailButYourScriptsDontHaveToFallbackFromCDNToLocalJQuery.aspx
