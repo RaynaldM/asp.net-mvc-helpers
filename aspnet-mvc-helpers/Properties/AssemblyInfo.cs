@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rayspiration")]
 [assembly: AssemblyProduct("aspnet-mvc-helpers")]
-[assembly: AssemblyCopyright("Copyright ©  2014-2015")]
+[assembly: AssemblyCopyright("Copyright ©  2014-2016")]
 [assembly: AssemblyTrademark("Rayspiration")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Vous pouvez spécifier toutes les valeurs ou indiquer les numéros de build et de révision par défaut 
 // en utilisant '*', comme indiqué ci-dessous :
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.24.*")]
-[assembly: AssemblyFileVersion("0.1.24.2")]
+[assembly: AssemblyVersion("0.1.25.*")]
+[assembly: AssemblyFileVersion("0.1.25.0")]

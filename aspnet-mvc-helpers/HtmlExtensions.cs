@@ -182,7 +182,7 @@ namespace aspnet_mvc_helpers
                 var scr = urls.Aggregate("",
                   (current, url) =>
                       current +
-                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url.Substring(0,url.LastIndexOf(".js", StringComparison.Ordinal)) + ".min.js") + "?v=" + CacheTag));
+                      string.Format(ScriptTag, System.Web.VirtualPathUtility.ToAbsolute(url.Substring(0, url.LastIndexOf(".js", StringComparison.Ordinal)) + ".min.js") + "?v=" + CacheTag));
 
                 return new MvcHtmlString(scr);
             }
@@ -213,18 +213,20 @@ namespace aspnet_mvc_helpers
         /// <param name="helper">HTML Context</param>
         /// <param name="debug">Set if we we are in debug mode(true)</param>
         /// <param name="bundleName">Default name of JQuery bundle (default : ~/bundles/jquery) </param>
-        /// <param name="version">Default version of JQuery (2.2.2 by default)</param>
+        /// <param name="version">Default version of JQuery (3.1.0 by default)</param>
         /// <returns>Scripts url for JQuery</returns>
         public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false,
-            string bundleName = "~/bundles/jquery", string version = "2.2.3")
+            string bundleName = "~/bundles/jquery", string version = "3.1.0")
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
             if (debug) return new MvcHtmlString(string.Format(ScriptTag, bundleUrl));
 
             // setup the script to load Jquery from CDN
-          //  var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery.min.js", version);
-            var jQueryVersion = MicrosoftCDNRoot + string.Format("jQuery/jquery-{0}.min.js", version);
+            //var jQueryVersion = GoogleCDNRoot + string.Format("jquery/{0}/jquery.min.js", version);
+            //  var jQueryVersion = MicrosoftCDNRoot + string.Format("jQuery/jquery-{0}.min.js", version);
+
+            var jQueryVersion = string.Format("https://code.jquery.com/jquery-{0}.min.js", version);
 
             // setup the script to load Jquery if CDN is fail
             // Inspired by http://www.asp.net/mvc/overview/performance/bundling-and-minification
