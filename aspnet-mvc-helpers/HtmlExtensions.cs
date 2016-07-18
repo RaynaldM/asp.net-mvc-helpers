@@ -98,7 +98,7 @@ namespace aspnet_mvc_helpers
                 if (debug && (suffixPos < 0 || url.Substring(suffixPos) != ".ts"))
                     throw new ArgumentException("TypeScript Helper : bad name or bad suffix");
 
-                realUrls.Add(url.Substring(0, suffixPos));
+                realUrls.Add(url.Substring(0, suffixPos)+".js");
             }
             return helper.JavaScript(bundleName, realUrls, debug);
         }
