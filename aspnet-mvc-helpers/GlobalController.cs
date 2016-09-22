@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 
 namespace aspnet_mvc_helpers
@@ -13,18 +12,15 @@ namespace aspnet_mvc_helpers
         // Thank to http://afana.me/post/aspnet-mvc-internationalization.aspx
         protected override IAsyncResult BeginExecuteCore(AsyncCallback callback, object state)
         {
-
-            string cultureName;
-
             // Attempt to read the culture cookie from Request
-            HttpCookie cultureCookie = Request.Cookies["_culture"];
-            if (cultureCookie != null)
-                cultureName = cultureCookie.Value;
-            else
-                cultureName = Request.UserLanguages != null && Request.UserLanguages.Length > 0
+            var cultureCookie = Request.Cookies["_culture"];
+            var cultureName = cultureCookie != null
+                ? cultureCookie.Value
+                : (Request.UserLanguages != null && Request.UserLanguages.Length > 0
                     ? Request.UserLanguages[0]
                     : // obtain it from HTTP header AcceptLanguages
-                    null;
+                    null);
+
             // Validate culture name
             cultureName = CultureHelper.GetImplementedCulture(cultureName); // This is safe
 

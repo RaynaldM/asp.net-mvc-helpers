@@ -22,7 +22,7 @@ namespace aspnet_mvc_helpers
         /// <param name="expression">an axpression</param>
         /// <param name="htmlAttributes">htmlAttributes to add in std control</param>
         /// <returns>The Html of control</returns>
-        public static MvcHtmlString BootstrapRadioButtons<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, object htmlAttributes = null)
+        public static MvcHtmlString BootstrapRadioButtons<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression)
         {
             //http://weblogs.asp.net/psheriff/creating-radio-buttons-using-bootstrap-and-mvc
             var metaData = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
@@ -37,11 +37,10 @@ namespace aspnet_mvc_helpers
                     name
                     );
 
-                var radio = html.RadioButtonFor(expression, name, htmlAttributes).ToHtmlString();
+                var radio = html.RadioButtonFor(expression, name, new {id }).ToHtmlString();
                 var active = radio.Contains("data-val=\"true\"") ? " active" : string.Empty;
                 sb.AppendFormat(
-                    "<label id='{0}' class='btn btn-primary{3}'>{2}{1}</label>",
-                    id,
+                    "<label class='btn btn-primary{2}'>{1}{0}</label>",
                     name,
                     radio,
                     active
@@ -65,7 +64,7 @@ namespace aspnet_mvc_helpers
         /// <returns>Checkbox</returns>
         public static MvcHtmlString BootStrapCheckBoxFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, bool withLabel = true)
         {
-            const string domElement = @"<div class='checkbox'><label for='{0}'><input name='{0}' id='{0}' type='checkbox' value='{1}'{2}><input type='hidden' value='{4}' name='{0}'>{3}</label></div>";
+            const string domElement = @"<div class='checkbox'><label><input name='{0}' id='{0}' type='checkbox' value='{1}'{2}><input type='hidden' value='{4}' name='{0}'>{3}</label></div>";
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
             var isChecked = false;

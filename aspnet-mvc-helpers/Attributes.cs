@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Net;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
 
 namespace aspnet_mvc_helpers
 {
+    #region cache
     /// <summary>
     /// Used attribute to remove cache page for each call to server
     /// Place attribute on controller method
@@ -12,6 +14,7 @@ namespace aspnet_mvc_helpers
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class NoCacheAttribute : ActionFilterAttribute
     {
+        /// <inheritdoc />
         public override void OnResultExecuting(ResultExecutingContext filterContext)
         {
             filterContext.HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
@@ -23,6 +26,26 @@ namespace aspnet_mvc_helpers
         }
     }
 
+    /// <summary>
+    /// Attribut used to say to the browser (and server)
+    /// this action is highly cacheable
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class OptimizedForCacheAttribute : ActionFilterAttribute
+    {
+        /// <inheritdoc />
+        public override void OnResultExecuting(ResultExecutingContext filterContext)
+        {
+            filterContext.HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(30));
+            filterContext.HttpContext.Response.Cache.SetValidUntilExpires(true);
+            filterContext.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
+            //filterContext.HttpContext.Response.Cache.SetETag(todo);
+            base.OnResultExecuting(filterContext);
+        }
+    }
+    #endregion
+
+    #region Ajax
     /// <summary>
     /// Used attribute to filter Ajax call from client
     /// </summary>
@@ -43,21 +66,34 @@ namespace aspnet_mvc_helpers
     }
 
     /// <summary>
-    /// Attribut used to say to the browser (and server)
-    /// this action is highly cacheable
+    /// Format error and exception for a Json usage if it's an ajax request
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class OptimizedForCacheAttribute : ActionFilterAttribute
+    public class AjaxHandleErrorAttribute : HandleErrorAttribute
     {
-        public override void OnResultExecuting(ResultExecutingContext filterContext)
+        public override void OnException(ExceptionContext filterContext)
         {
-            filterContext.HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(30));
-            filterContext.HttpContext.Response.Cache.SetValidUntilExpires(true);
-            filterContext.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
-            //filterContext.HttpContext.Response.Cache.SetETag(todo);
-            base.OnResultExecuting(filterContext);
+            if (filterContext.HttpContext.Request.IsAjaxRequest() && filterContext.Exception != null)
+            {
+                filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                filterContext.Result = new JsonResult
+                {
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    Data = new
+                    {
+                        filterContext.Exception.Message,
+                        filterContext.Exception.StackTrace
+                    }
+                };
+                filterContext.ExceptionHandled = true;
+            }
+            else
+            {
+                base.OnException(filterContext);
+            }
         }
     }
+    #endregion
 
     /// <summary>
     /// Decorates any MVC route that needs to have client requests limited by time.
