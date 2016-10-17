@@ -20,7 +20,6 @@ namespace aspnet_mvc_helpers
         /// <typeparam name="TValue">The type of Value</typeparam>
         /// <param name="html">Html Comntext</param>
         /// <param name="expression">an axpression</param>
-        /// <param name="htmlAttributes">htmlAttributes to add in std control</param>
         /// <returns>The Html of control</returns>
         public static MvcHtmlString BootstrapRadioButtons<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression)
         {
@@ -37,7 +36,7 @@ namespace aspnet_mvc_helpers
                     name
                     );
 
-                var radio = html.RadioButtonFor(expression, name, new {id }).ToHtmlString();
+                var radio = html.RadioButtonFor(expression, name, new { id }).ToHtmlString();
                 var active = radio.Contains("data-val=\"true\"") ? " active" : string.Empty;
                 sb.AppendFormat(
                     "<label class='btn btn-primary{2}'>{1}{0}</label>",
@@ -57,30 +56,18 @@ namespace aspnet_mvc_helpers
         /// http://getbootstrap.com/css/#forms-controls
         /// </summary>
         /// <typeparam name="TModel">The type of the model.</typeparam>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="html">The HTML context</param>
         /// <param name="expression">The expression.</param>
         /// <param name="withLabel">Include the label or not</param>
         /// <returns>Checkbox</returns>
-        public static MvcHtmlString BootStrapCheckBoxFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, bool withLabel = true)
+        public static MvcHtmlString BootStrapCheckBoxFor<TModel>(this HtmlHelper<TModel> html, Expression<Func<TModel, bool>> expression, bool withLabel = true)
         {
-            const string domElement = @"<div class='checkbox'><label><input name='{0}' id='{0}' type='checkbox' value='{1}'{2}><input type='hidden' value='{4}' name='{0}'>{3}</label></div>";
+            const string domElement = @"<div class='checkbox'><label>{0}{1}</label></div>";
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
-            var isChecked = false;
-            if (metadata.Model != null)
-            {
-                bool modelChecked;
-                if (bool.TryParse(metadata.Model.ToString(), out modelChecked))
-                {
-                    isChecked = modelChecked;
-                }
-            }
+            var checkboxHtml = html.CheckBoxFor(expression).ToHtmlString();
 
-            var result = string.Format(domElement, metadata.PropertyName, (!isChecked).ToString().ToLower()/*metadata.Model*/,
-                isChecked ? " checked='checked'" : string.Empty,
-                withLabel ? metadata.DisplayName ?? metadata.PropertyName : "",
-                isChecked.ToString().ToLower());
+            var result = string.Format(domElement, checkboxHtml, withLabel ? metadata.DisplayName ?? metadata.PropertyName : "");
 
             return new MvcHtmlString(result);
         }

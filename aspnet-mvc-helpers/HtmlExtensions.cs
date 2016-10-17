@@ -19,7 +19,7 @@ namespace aspnet_mvc_helpers
     public static class HtmlExtensions
     {
         private const string MicrosoftCDNRoot = "https://ajax.aspnetcdn.com/ajax/";
-        private const string GoogleCDNRoot = "https://ajax.googleapis.com/ajax/libs/";
+        //private const string GoogleCDNRoot = "https://ajax.googleapis.com/ajax/libs/";
 
         /// <summary>
         /// Tag for prevent caching
@@ -216,7 +216,7 @@ namespace aspnet_mvc_helpers
         /// <param name="version">Default version of JQuery (3.1.0 by default)</param>
         /// <returns>Scripts url for JQuery</returns>
         public static MvcHtmlString JQuery(this HtmlHelper helper, bool debug = false,
-            string bundleName = "~/bundles/jquery", string version = "3.1.0")
+            string bundleName = "~/bundles/jquery", string version = "3.1.1")
         {
             var bundleUrl = BundleTable.Bundles.ResolveBundleUrl(bundleName);
 
@@ -250,7 +250,7 @@ namespace aspnet_mvc_helpers
         /// <param name="mvcVersion">Default version of JQuery Validate Unobtrusive (5.2.3 by default)</param>
         /// <returns>Scripts url for validations</returns>
         public static MvcHtmlString JQueryVal(this HtmlHelper helper, bool debug = false,
-            string bundleName = "~/bundles/jqueryval", string version = "1.14.0", string mvcVersion = "5.2.3")
+            string bundleName = "~/bundles/jqueryval", string version = "1.15.1", string mvcVersion = "5.2.3")
         {
             // todo : increase version when MS CDN is ready
             // todo : include localized message
