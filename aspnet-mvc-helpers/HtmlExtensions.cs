@@ -464,6 +464,29 @@ namespace aspnet_mvc_helpers
             script.Append(Scripts.Render("~/bundles/analytics"));
             return new MvcHtmlString(script.ToString());
         }
+        /// <summary>
+        /// Add an * to the label if the field is required
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="html"></param>
+        /// <param name="expression"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <param name="title">title of the label ("this field is required" by default)</param>
+        /// <returns></returns>
+        public static MvcHtmlString LabelWithRequiredFor<TModel, TProperty>(this HtmlHelper<TModel> html,
+                                                                Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null,
+                                                                string title = "this field is required")
+        {
+            var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+
+            if (!metadata.IsRequired) return html.LabelFor(expression, htmlAttributes);
+
+            var label = html.LabelFor(expression, htmlAttributes).ToHtmlString();
+            label = label.Replace("</label>", string.Format("<span class='text-danger required' title='{0}'>&nbsp;*</span></label>", title));
+            label = label.Replace("<label for", "<label class='required' for");
+            return MvcHtmlString.Create(label);
+        }
 
         #region Compressed Partial
         /// <summary>
