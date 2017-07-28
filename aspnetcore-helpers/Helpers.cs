@@ -201,7 +201,7 @@ namespace aspnetcore_helpers
 
     public static class SessionExtensions
     {
-        public static void Set0<T>(this ISession session, string key, T value)
+        public static void Set<T>(this ISession session, string key, T value)
         {
             session.SetString(key, JsonConvert.SerializeObject(value));
          }
