@@ -4,6 +4,7 @@ using System.Web.Mvc;
 
 namespace aspnet_mvc_helpers
 {
+    /// <inheritdoc />
     /// <summary>
     /// A base controller with a culture thread setter 
     /// </summary>
