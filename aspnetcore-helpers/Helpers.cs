@@ -4,6 +4,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace aspnetcore_helpers
 {
@@ -194,6 +196,21 @@ namespace aspnetcore_helpers
             if (!name.Contains("-")) return name;
 
             return name.Split('-')[0]; // Read first part only. E.g. "en", "es"
+        }
+    }
+
+    public static class SessionExtensions
+    {
+        public static void Set0<T>(this ISession session, string key, T value)
+        {
+            session.SetString(key, JsonConvert.SerializeObject(value));
+         }
+
+        public static T Get<T>(this ISession session, string key)
+        {
+            var value = session.GetString(key);
+            return value == null ? default(T) :
+                JsonConvert.DeserializeObject<T>(value);
         }
     }
 
