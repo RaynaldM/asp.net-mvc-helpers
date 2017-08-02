@@ -6,8 +6,8 @@
     <Authors>R. Messie</Authors>
     <Company>Rayspiration</Company>
     <Copyright>Rayspiration 2017-2018</Copyright>
-    <Version>0.1.0</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Version>0.2.0</Version>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/RaynaldM/asp.net-mvc-helpers</PackageProjectUrl>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
