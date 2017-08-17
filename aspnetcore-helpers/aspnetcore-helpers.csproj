@@ -4,12 +4,15 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <Authors>R. Messie</Authors>
     <Company>Rayspiration</Company>
-    <Description>Simple set of Helpers I use in my .net core app</Description>
-    <Copyright>Rayspiration</Copyright>
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
-    <FileVersion>0.2.1.0</FileVersion>
+    <Description>Simple set of Helpers I use in my asp.net core app</Description>
+    <Copyright>Rayspiration 2017-2018</Copyright>
+    <AssemblyVersion>0.2.2.0</AssemblyVersion>
+    <FileVersion>0.2.2.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/RaynaldM/asp.net-mvc-helpers</PackageProjectUrl>
+    <RepositoryUrl />
   </PropertyGroup>
 
   <ItemGroup>

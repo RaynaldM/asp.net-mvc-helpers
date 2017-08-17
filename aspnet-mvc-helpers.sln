@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.26724.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet-mvc-helpers", "aspnet-mvc-helpers\aspnet-mvc-helpers.csproj", "{20500DF9-6B74-4E7F-8CCC-635D3A5679D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnetcore-helpers", "aspnetcore-helpers\aspnetcore-helpers.csproj", "{02473EF4-3863-4CE0-A694-3AA79D00416A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aspnetcore-helpers", "aspnetcore-helpers\aspnetcore-helpers.csproj", "{02473EF4-3863-4CE0-A694-3AA79D00416A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "netcore-helpers", "netcore-helpers\netcore-helpers.csproj", "{DBCDF6C0-BA2E-4ABD-82DB-5469C0BA6E50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{02473EF4-3863-4CE0-A694-3AA79D00416A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02473EF4-3863-4CE0-A694-3AA79D00416A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02473EF4-3863-4CE0-A694-3AA79D00416A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBCDF6C0-BA2E-4ABD-82DB-5469C0BA6E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBCDF6C0-BA2E-4ABD-82DB-5469C0BA6E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBCDF6C0-BA2E-4ABD-82DB-5469C0BA6E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBCDF6C0-BA2E-4ABD-82DB-5469C0BA6E50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

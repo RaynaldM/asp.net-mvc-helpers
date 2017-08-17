@@ -7,6 +7,7 @@ using System.Web.Mvc;
 namespace aspnet_mvc_helpers
 {
     #region cache
+    /// <inheritdoc />
     /// <summary>
     /// Used attribute to remove cache page for each call to server
     /// Place attribute on controller method
@@ -26,6 +27,7 @@ namespace aspnet_mvc_helpers
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// Attribut used to say to the browser (and server)
     /// this action is highly cacheable
@@ -46,12 +48,14 @@ namespace aspnet_mvc_helpers
     #endregion
 
     #region Ajax
+    /// <inheritdoc />
     /// <summary>
     /// Used attribute to filter Ajax call from client
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AjaxOnlyAttribute : ActionFilterAttribute
     {
+        /// <inheritdoc />
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (filterContext.HttpContext.Request.IsAjaxRequest())
@@ -65,12 +69,14 @@ namespace aspnet_mvc_helpers
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// Format error and exception for a Json usage if it's an ajax request
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AjaxHandleErrorAttribute : HandleErrorAttribute
     {
+        /// <inheritdoc />
         public override void OnException(ExceptionContext filterContext)
         {
             if (filterContext.HttpContext.Request.IsAjaxRequest() && filterContext.Exception != null)
@@ -95,15 +101,16 @@ namespace aspnet_mvc_helpers
     }
     #endregion
 
-    /// <summary>
-    /// Decorates any MVC route that needs to have client requests limited by time.
-    /// http://stackoverflow.com/questions/33969/best-way-to-implement-request-throttling-in-asp-net-mvc
-    /// [Throttle(Name="TestThrottle", Message = "You must wait {0} seconds before accessing this url again.", Seconds = 5)]
-    ///public ActionResult TestThrottle()
-    /// </summary>
-    /// <remarks>
-    /// Uses the current System.Web.Caching.Cache to store each client request to the decorated route.
-    /// </remarks>
+    /// <inheritdoc />
+    ///  <summary>
+    ///  Decorates any MVC route that needs to have client requests limited by time.
+    ///  http://stackoverflow.com/questions/33969/best-way-to-implement-request-throttling-in-asp-net-mvc
+    ///  [Throttle(Name="TestThrottle", Message = "You must wait {0} seconds before accessing this url again.", Seconds = 5)]
+    /// public ActionResult TestThrottle()
+    ///  </summary>
+    ///  <remarks>
+    ///  Uses the current System.Web.Caching.Cache to store each client request to the decorated route.
+    ///  </remarks>
     [AttributeUsage(AttributeTargets.Method)]
     public class ThrottleAttribute : ActionFilterAttribute
     {
@@ -136,6 +143,7 @@ namespace aspnet_mvc_helpers
         /// </summary>
         public bool UseUserAgent { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Attribute contructor, set UseUserAgent=true
         /// </summary>
@@ -144,12 +152,13 @@ namespace aspnet_mvc_helpers
             UseUserAgent = true;
         }
 
+        /// <inheritdoc />
         public override void OnActionExecuting(ActionExecutingContext c)
         {
             var key = string.Concat(Name, "-", c.HttpContext.Request.UserHostAddress);
             if (UseUserAgent)
                 key += "-" + c.HttpContext.Request.UserAgent;
-            if (UseSessionId && c.HttpContext.Session != null)
+            if (UseSessionId)
                 key += c.HttpContext.Session.SessionID;
             var allowExecute = false;
 
