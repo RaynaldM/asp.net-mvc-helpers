@@ -3,11 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace aspnetcore_helpers
+namespace aspnetcore.helpers
 {
-   
+    public static class Helpers
+    {
+        public static string AbsoluteAction(
+            this IUrlHelper url,
+            string actionName,
+            string controllerName,
+            object routeValues = null)
+        {
+            string scheme = url.ActionContext.HttpContext.Request.Scheme;
+            return url.Action(actionName, controllerName, routeValues, scheme);
+        }
+
+        /// <summary>
+        /// Determines whether the specified HTTP request is an AJAX request.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// true if the specified HTTP request is an AJAX request; otherwise, false.
+        /// </returns>
+        /// <param name="request">The HTTP request.</param><exception cref="T:System.ArgumentNullException">The <paramref name="request"/> parameter is null (Nothing in Visual Basic).</exception>
+        public static bool IsAjaxRequest(this HttpRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return request.Headers != null && request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
+    }
+
     /// <summary>
     /// Helper for culture and thread
     /// </summary>
